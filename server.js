@@ -1,0 +1,11 @@
+const express = require('express'); const path = require('path'); const app = express();
+app.use(express.json());
+// HTML ফাইলটি ব্রাউজারে দেখানোর জন্য app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
+// সাময়িক ডেটাবেস const urlDatabase = {};
+// ১. শর্ট লিংক তৈরি করার API Endpoint app.post('/api/shorten', (req, res) => { const { originalUrl } = req.body; const shortCode = Math.random().toString(36).substring(2, 8);
+urlDatabase[shortCode] = originalUrl;
+const protocol = req.protocol; const host = req.get('host'); const shortUrl = ${protocol}://${host}/${shortCode};
+res.json({ shortUrl }); });
+// ২. শর্ট লিংকে ক্লিক করলে আসল লিংকে Redirect করা app.get('/:shortCode', (req, res) => { const { shortCode } = req.params; const originalUrl = urlDatabase[shortCode];
+if (originalUrl) { return res.redirect(originalUrl); } res.status(404).send('লিংকটি পাওয়া যায়নি!'); });
+const PORT = process.env.PORT || 3000; app.listen(PORT, () => console.log(Server running on port ${PORT}));
