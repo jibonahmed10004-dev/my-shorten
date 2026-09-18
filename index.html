@@ -1,0 +1,29 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>ইউআরএল শর্টনার</title>
+</head>
+<body>
+  <h2>URL Shortener</h2>
+  <input type="url" id="longUrl" placeholder="লম্বা লিংকটি দিন" required>
+  <button onclick="shortenUrl()">Shorten</button>
+  <p id="result"></p>
+
+  <script>
+    async function shortenUrl() {
+      const longUrl = document.getElementById('longUrl').value;
+      const response = await fetch('/api/shorten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ originalUrl: longUrl })
+      });
+      const data = await response.json();
+      if(data.shortUrl) {
+        document.getElementById('result').innerHTML = শর্ট লিংক: <a href="${data.shortUrl}" target="_blank">${data.shortUrl}</a>;
+      }
+    }
+  </script>
+</body>
+</html>
